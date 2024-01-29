@@ -13,9 +13,11 @@ const template = fs.readFileSync("./template.html", "utf-8");
 app.get("/", async (request, response) => {
   try {
     const posts = await prisma.post.findMany();
-
-    // JSON形式でデータをクライアントに返す
-    response.json(posts);
+    const html = template.replace(
+      "<!-- posts -->",
+      posts.map((post, index) => `<li><strong>#${index + 1}</strong> ${escapeHTML(post.message)}</li>`).join(""),
+    );
+    response.send(html);
   } catch (error) {
     console.error("Error fetching posts:", error);
     response.status(500).json({ error: "Internal Server Error" });

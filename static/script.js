@@ -3,25 +3,21 @@ const postsList = document.querySelector("ul");
 
 const fetchAndRenderPosts = async () => {
   try {
-    // サーバーサイドからデータを取得
     const response = await fetch('/');
-    const data = await response.json();
+    const data = await response.text();
 
-    console.log("Received data from server:", data);
+    // 新しい要素を作成し、取得した HTML をその中に設定
+    const newElement = document.createElement("div");
+    newElement.innerHTML = data;
 
-    // サーバーサイドから取得したデータを元に番号つきのリストを構築
-    postsList.innerHTML = data.map((post, index) => `<li><strong>#${index + 1}</strong> ${escapeHTML(post.message)}</li>`).join("");
+    // 元の ul 要素に新しい要素を追加
+    postsList.innerHTML = '';
+    postsList.appendChild(newElement.querySelector("ul"));
   } catch (error) {
     console.error("Error fetching and rendering posts:", error);
   }
 };
 
-// 配列の比較関数
-const arraysEqual = (a, b) => {
-  return JSON.stringify(a) === JSON.stringify(b);
-};
-
 setInterval(fetchAndRenderPosts, 5 * 1000);
 
-// 初回のデータ取得と表示
 fetchAndRenderPosts();
