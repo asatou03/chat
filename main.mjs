@@ -9,11 +9,12 @@ app.use(express.static("static"));
 const prisma = new PrismaClient();
 
 const template = fs.readFileSync("./template.html", "utf-8");
+
 app.get("/", async (request, response) => {
   const posts = await prisma.post.findMany();
   const html = template.replace(
     "<!-- posts -->",
-    posts.map((post) => `<li>${escapeHTML(post.message)}</li>`).join(""),
+    posts.map((post, index) => `<li><strong>#${index + 1}</strong> ${escapeHTML(post.message)}</li>`).join(""),
   );
   response.send(html);
 });
@@ -25,4 +26,6 @@ app.post("/send", async (request, response) => {
   response.redirect("/");
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
