@@ -11,19 +11,27 @@ const prisma = new PrismaClient();
 const template = fs.readFileSync("./template.html", "utf-8");
 
 app.get("/", async (request, response) => {
-  const posts = await prisma.post.findMany();
-  const html = template.replace(
-    "<!-- posts -->",
-    posts.map((post, index) => `<li><strong>#${index + 1}</strong> ${escapeHTML(post.message)}</li>`).join(""),
-  );
-  response.send(html);
+  try {
+    const posts = await prisma.post.findMany();
+
+    // JSON形式でデータをクライアントに返す
+    response.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.post("/send", async (request, response) => {
-  await prisma.post.create({
-    data: { message: request.body.message },
-  });
-  response.redirect("/");
+  try {
+    await prisma.post.create({
+      data: { message: request.body.message },
+    });
+    response.redirect("/");
+  } catch (error) {
+    console.error("Error creating post:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.listen(3000, () => {
