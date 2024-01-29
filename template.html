@@ -16,18 +16,12 @@
     </form>
     <script src="/script.js"></script>
 
-    <script>
-      const postsList = document.querySelector("ul");
+    <script src="/script.js"></script>
+<script>
+  // 初回のデータ取得と表示
+  fetchAndRenderPosts();
+</script>
 
-      // サーバーサイドから受け取ったデータを表示
-      const postsData = [
-        { message: "サンプルメッセージ1" },
-        { message: "サンプルメッセージ2" },
-        // サーバーサイドから取得した実際のデータ
-      ];
-
-      postsList.innerHTML = postsData.map((post, index) => `<li><strong>#${index + 1}</strong> ${post.message}</li>`).join("");
-    </script>
   </body>
 </html>
 
